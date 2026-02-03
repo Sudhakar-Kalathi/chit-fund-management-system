@@ -80,3 +80,33 @@ in its demo form.
 ---
 
 **Author:** Sudhakar Kalathi  
+
+# Backend – Chit Fund Management System (Demo)
+
+This backend is part of the **demo version** of a Chit Fund / Micro-Finance
+Management System.
+
+## Purpose
+- Demonstrate clean architecture
+- Enforce audit-first design
+- Separate roles (Admin / User)
+- Avoid early coupling to database
+
+## Current State
+- Spring Boot project scaffolded
+- No database integration yet
+- No business logic implemented
+- Runtime startup not enforced at this stage
+
+## Design Principles
+- Backend is the single source of truth
+- Financial data is append-only
+- No silent updates
+- Security enforced server-side
+- Database introduced intentionally later
+
+## Next Steps
+- Security baseline
+- API contract definitions
+- Audit model
+- Database integration (MySQL)
