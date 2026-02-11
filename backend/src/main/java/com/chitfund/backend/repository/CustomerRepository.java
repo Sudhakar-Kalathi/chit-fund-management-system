@@ -3,6 +3,8 @@ package com.chitfund.backend.repository;
 import com.chitfund.backend.domain.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 import java.util.List;
 
@@ -13,6 +15,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     boolean existsByCustomerCode(String customerCode);
 
-    List<Customer> findByActiveTrue();
+    Page<Customer> findByActiveTrue(Pageable pageable);
+
+    Page<Customer> findByNameContainingIgnoreCaseOrPhoneContaining(String name, String phone, Pageable pageable);
+
+    Page<Customer> findByActiveTrueAndNameContainingIgnoreCaseOrPhoneContaining(String name, String phone,
+            Pageable pageable);
 
 }

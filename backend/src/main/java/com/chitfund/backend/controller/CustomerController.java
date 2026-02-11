@@ -10,7 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,12 +27,33 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success("Customer created successfully", saved));
     }
 
-    // ADMIN + STAFF - View
+    // ADMIN + STAFF - View with Pagination
     @GetMapping("/api/customers")
     @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
-    public ResponseEntity<ApiResponse<List<CustomerResponseDTO>>> getAllCustomers() {
-        List<CustomerResponseDTO> customers = customerService.getAllCustomers();
+    public ResponseEntity<ApiResponse<Page<CustomerResponseDTO>>> getAllCustomers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<CustomerResponseDTO> customers = customerService.getAllCustomers(PageRequest.of(page, size));
         return ResponseEntity.ok(ApiResponse.success("Customers fetched successfully", customers));
+    }
+
+    // ADMIN + STAFF - Search
+    @GetMapping("/api/customers/search")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponse<Page<CustomerResponseDTO>>> searchCustomers(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<CustomerResponseDTO> customers = customerService.searchCustomers(query, PageRequest.of(page, size));
+        return ResponseEntity.ok(ApiResponse.success("Search results fetched successfully", customers));
+    }
+
+    // ADMIN + STAFF - Get By ID
+    @GetMapping("/api/customers/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(@PathVariable Long id) {
+        CustomerResponseDTO customer = customerService.getCustomerById(id);
+        return ResponseEntity.ok(ApiResponse.success("Customer fetched successfully", customer));
     }
 
     // ADMIN ONLY - Update
