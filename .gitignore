@@ -1,0 +1,33 @@
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/wrapper/maven-wrapper.jar
+.metadata/
+bin/
+tmp/
+*.swp
+*.log
+.DS_Store
+
+# IDE - IntelliJ
+.idea/
+*.iml
+*.iws
+
+# IDE - VS Code
+.vscode/
+
+# Node / React
+node_modules/
+dist/
+dist-ssr/
+*.local
+.eslintcache
+
+# Project specific
+backend/create_users.sql
+backend/PasswordHashGenerator.java
+debug/

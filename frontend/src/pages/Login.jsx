@@ -1,16 +1,30 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, AlertCircle } from 'lucide-react';
+import { Lock, User, AlertCircle, UserCog } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [userType, setUserType] = useState('admin');
+    const [username, setUsername] = useState('admin');
+    const [password, setPassword] = useState('admin');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    const handleUserTypeChange = (type) => {
+        setUserType(type);
+        // Auto-fill credentials based on user type
+        if (type === 'admin') {
+            setUsername('admin');
+            setPassword('admin');
+        } else {
+            setUsername('staff');
+            setPassword('staff');
+        }
+        setError('');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,6 +72,37 @@ const Login = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* User Type Selector */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-3">Select User Type</label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => handleUserTypeChange('admin')}
+                                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${userType === 'admin'
+                                            ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                        }`}
+                                >
+                                    <UserCog className="mx-auto mb-2" size={24} />
+                                    <p className="font-semibold">Admin</p>
+                                    <p className="text-xs mt-1">Full Access</p>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleUserTypeChange('staff')}
+                                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${userType === 'staff'
+                                            ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                        }`}
+                                >
+                                    <User className="mx-auto mb-2" size={24} />
+                                    <p className="font-semibold">Staff</p>
+                                    <p className="text-xs mt-1">View Only</p>
+                                </button>
+                            </div>
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                             <div className="relative">
@@ -107,8 +152,10 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-gray-600">
-                        <p>Default credentials: admin/admin or staff/staff</p>
+                    <div className="mt-6 text-center">
+                        <p className="text-xs text-gray-500">
+                            {userType === 'admin' ? '🔑 Admin has full access to create, edit, and delete' : '👁️ Staff can only view information'}
+                        </p>
                     </div>
                 </div>
             </motion.div>

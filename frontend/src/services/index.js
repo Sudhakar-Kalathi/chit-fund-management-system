@@ -26,30 +26,30 @@ export const authService = {
 };
 
 export const customerService = {
-    getAll: (page = 0, size = 10) => api.get(`/customers?page=${page}&size=${size}`),
-    search: (query, page = 0, size = 10) => api.get(`/customers/search?query=${query}&page=${page}&size=${size}`),
-    getById: (id) => api.get(`/customers/${id}`),
-    create: (data) => api.post('/admin/customers', data),
-    update: (id, data) => api.put(`/admin/customers/${id}`, data),
-    delete: (id) => api.delete(`/admin/customers/${id}`)
+    getAll: (page = 0, size = 10) => api.get(`/api/customers?page=${page}&size=${size}`),
+    search: (query, page = 0, size = 10) => api.get(`/api/customers/search?query=${query}&page=${page}&size=${size}`),
+    getById: (id) => api.get(`/api/customers/${id}`),
+    create: (data) => api.post('/api/admin/customers', data),
+    update: (id, data) => api.put(`/api/admin/customers/${id}`, data),
+    delete: (id) => api.delete(`/api/admin/customers/${id}`)
 };
 
 export const chitGroupService = {
-    getAll: (page = 0, size = 10) => api.get(`/chit-groups?page=${page}&size=${size}`),
-    search: (query, page = 0, size = 10) => api.get(`/chit-groups/search?query=${query}&page=${page}&size=${size}`),
-    getById: (id) => api.get(`/chit-groups/${id}`),
-    create: (data) => api.post('/chit-groups', data),
-    addMember: (groupId, customerId) => api.post(`/chit-groups/${groupId}/members/${customerId}`),
-    updateCycle: (cycleId, data) => api.put(`/chit-groups/cycles/${cycleId}`, data)
+    getAll: (page = 0, size = 10) => api.get(`/api/chit-groups?page=${page}&size=${size}`),
+    search: (query, page = 0, size = 10) => api.get(`/api/chit-groups/search?query=${query}&page=${page}&size=${size}`),
+    getById: (id) => api.get(`/api/chit-groups/${id}`),
+    create: (data) => api.post('/api/chit-groups', data),
+    addMember: (groupId, customerId) => api.post(`/api/chit-groups/${groupId}/members/${customerId}`),
+    updateCycle: (cycleId, data) => api.put(`/api/chit-groups/cycles/${cycleId}`, data)
 };
 
 export const paymentService = {
-    create: (data) => api.post('/payments', data),
-    getByDate: (date) => api.get(`/payments/date/${date}`),
-    getByMonth: (year, month) => api.get(`/payments/month?year=${year}&month=${month}`)
+    create: (data) => api.post('/api/payments', data),
+    getByDate: (date) => api.get(`/api/payments/date/${date}`),
+    getByMonth: (year, month) => api.get(`/api/payments/month?year=${year}&month=${month}`)
 };
 
 export const dayBookService = {
-    create: (data) => api.post('/daybook', data),
-    getByDate: (date) => api.get(`/daybook/date/${date}`)
+    create: (data) => api.post('/api/daybook', data),
+    getByDate: (date) => api.get(`/api/daybook/date/${date}`)
 };

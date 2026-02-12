@@ -2,7 +2,6 @@ package com.chitfund.backend.service;
 
 import com.chitfund.backend.domain.DayBookEntry;
 import com.chitfund.backend.dto.DayBookEntryDTO;
-import com.chitfund.backend.exception.ResourceNotFoundException;
 import com.chitfund.backend.mapper.FinanceMapper;
 import com.chitfund.backend.repository.DayBookEntryRepository;
 import lombok.RequiredArgsConstructor;
