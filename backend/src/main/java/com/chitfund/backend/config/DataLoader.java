@@ -16,26 +16,26 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create default admin user if not exists
-        if (!userRepository.existsByUsername("admin")) {
+        // Create unique admin user if not exists
+        if (!userRepository.existsByUsername("admin_master")) {
             User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setUsername("admin_master");
+            admin.setPassword(passwordEncoder.encode("SecureAdmin@2026"));
             admin.setRole("ADMIN");
             admin.setEnabled(true);
             userRepository.save(admin);
-            System.out.println("✅ Default admin user created: admin/admin");
+            System.out.println("✅ Unique admin user created: admin_master / SecureAdmin@2026");
         }
 
-        // Create default staff user if not exists
-        if (!userRepository.existsByUsername("staff")) {
+        // Create unique staff user if not exists
+        if (!userRepository.existsByUsername("staff_user")) {
             User staff = new User();
-            staff.setUsername("staff");
-            staff.setPassword(passwordEncoder.encode("staff"));
+            staff.setUsername("staff_user");
+            staff.setPassword(passwordEncoder.encode("StaffPass#2026"));
             staff.setRole("STAFF");
             staff.setEnabled(true);
             userRepository.save(staff);
-            System.out.println("✅ Default staff user created: staff/staff");
+            System.out.println("✅ Unique staff user created: staff_user / StaffPass#2026");
         }
     }
 }
