@@ -101,13 +101,6 @@ A comprehensive, production-ready Chit Fund Management System built with Spring 
    npm run build
    ```
 
-## Default Credentials
-
-## Default Credentials
-
-- **Admin**: username: `admin_master`, password: `SecureAdmin@2026`
-- **Staff**: username: `staff_user`, password: `StaffPass#2026`
-
 ## API Endpoints
 
 ### Authentication
