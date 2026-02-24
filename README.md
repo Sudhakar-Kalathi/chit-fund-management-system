@@ -31,20 +31,23 @@ A comprehensive, production-ready Chit Fund Management System built with Spring 
 ### Customer Management
 - Create, view, edit, and soft-delete customers
 - Search by name, phone, or email
+- Advanced duplicate name validation
+- Detailed profiling (groups, active status, payment history)
 - Pagination support
 - Customer code generation
 
 ### Chit Group Management
-- Create and manage chit groups
+- Create and manage chit groups (duration, total members validation)
 - Track members and monthly cycles
-- Monthly auction/payout details
+- Monthly auction/payout details (Winner, Auction Amount, Commission, Dividend)
+- **Company Payout Tracking**: Track disbursements to winning customers
 - Group status tracking (ACTIVE/COMPLETED)
 
 ### Payment Tracking
 - Record customer payments
-- View payments by date or month
-- Payment mode tracking
-- Automatic totals calculation
+- **Fraud Prevention**: 2-week edit lock on old payment entries (Admin bypass)
+- View payments by date or aggregate monthly summarization
+- Real-time balance calculations
 
 ### Financial Management (DayBook)
 - Daily credit/debit entries
