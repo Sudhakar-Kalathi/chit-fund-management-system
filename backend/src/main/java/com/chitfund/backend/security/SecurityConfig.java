@@ -20,75 +20,68 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-    private final JwtAuthEntryPoint jwtAuthEntryPoint;
+        private final JwtAuthFilter jwtAuthFilter;
+        private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-            // No CSRF for JWT
-            .csrf(csrf -> csrf.disable())
+                http
+                                // No CSRF for JWT
+                                .csrf(csrf -> csrf.disable())
 
-            // Stateless API
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+                                // Stateless API
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // Proper 401 handling
-            .exceptionHandling(ex ->
-                    ex.authenticationEntryPoint(jwtAuthEntryPoint)
-            )
+                                // Proper 401 handling
+                                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthEntryPoint))
 
-            // 🔐 ROLE-BASED AUTHORIZATION
-            .authorizeHttpRequests(auth -> auth
+                                // 🔐 ROLE-BASED AUTHORIZATION
+                                .authorizeHttpRequests(auth -> auth
 
-                    // Public
-                    .requestMatchers(
-                            "/auth/**",
-                            "/debug/**",
-                            "/health",
-                            "/error"
-                    ).permitAll()
+                                                // Public endpoints only
+                                                .requestMatchers(
+                                                                "/auth/**",
+                                                                "/health",
+                                                                "/error")
+                                                .permitAll()
 
-                    // ADMIN only
-                    .requestMatchers("/api/admin/**")
-                    .hasRole("ADMIN")
+                                                // ADMIN only - write operations
+                                                .requestMatchers("/api/admin/**")
+                                                .hasRole("ADMIN")
 
-                    // ADMIN or STAFF
-                    .requestMatchers("/api/staff/**")
-                    .hasAnyRole("ADMIN", "STAFF")
+                                                // ADMIN or STAFF - read operations
+                                                .requestMatchers("/api/staff/**")
+                                                .hasAnyRole("ADMIN", "STAFF")
 
-                    // ANY LOGGED-IN USER
-                    .requestMatchers("/api/**")
-                    .authenticated()
+                                                // All other /api/** routes require authentication
+                                                .requestMatchers("/api/**")
+                                                .authenticated()
 
-                    // Anything else → must be logged in
-                    .anyRequest().authenticated()
-            )
+                                                // Anything else → must be logged in
+                                                .anyRequest().authenticated())
 
-            // Disable default login mechanisms
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
+                                // Disable default login mechanisms
+                                .formLogin(form -> form.disable())
+                                .httpBasic(basic -> basic.disable())
 
-            // JWT filter
-            .addFilterBefore(
-                    jwtAuthFilter,
-                    UsernamePasswordAuthenticationFilter.class
-            );
+                                // JWT filter
+                                .addFilterBefore(
+                                                jwtAuthFilter,
+                                                UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
-        return config.getAuthenticationManager();
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration config) throws Exception {
+                return config.getAuthenticationManager();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }

@@ -16,7 +16,8 @@ public class ChitGroupMapper {
         group.setChitAmount(dto.getChitAmount());
         group.setTotalMonths(dto.getTotalMonths());
         group.setTotalMembers(dto.getTotalMonths()); // As per requirement: Total members = Total Months
-        group.setMonthlyAmount(dto.getChitAmount() / dto.getTotalMonths());
+        group.setMonthlyAmount(dto.getChitAmount().divide(java.math.BigDecimal.valueOf(dto.getTotalMonths()), 2,
+                java.math.RoundingMode.HALF_UP));
         group.setStartDate(dto.getStartDate());
         return group;
     }
@@ -31,7 +32,7 @@ public class ChitGroupMapper {
         response.setMonthlyAmount(group.getMonthlyAmount());
         response.setStartDate(group.getStartDate());
         response.setStatus(group.getStatus());
-        response.setCurrentMonth(group.getCurrentMonth());
+        // currentMonth not stored in entity; omitted intentionally
         return response;
     }
 

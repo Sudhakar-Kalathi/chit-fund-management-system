@@ -12,16 +12,24 @@ public class FinanceMapper {
     public PaymentDTO toPaymentDTO(Payment payment) {
         PaymentDTO dto = new PaymentDTO();
         dto.setId(payment.getId());
-        dto.setCustomerId(payment.getCustomer().getId());
-        dto.setCustomerName(payment.getCustomer().getName());
-        dto.setChitGroupId(payment.getChitGroup().getId());
-        dto.setChitGroupName(payment.getChitGroup().getGroupName());
-        dto.setCycleNumber(payment.getCycleNumber());
-        dto.setAmountPaid(payment.getAmountPaid());
+        dto.setCustomerName(payment.getCustomerName());
+        dto.setAmountGave(payment.getAmountGave());
+        dto.setBalance(payment.getBalance());
+        dto.setPaymentTime(payment.getPaymentTime());
         dto.setPaymentDate(payment.getPaymentDate());
-        dto.setPaymentMode(payment.getPaymentMode());
         dto.setRemarks(payment.getRemarks());
         return dto;
+    }
+
+    public Payment toPayment(PaymentDTO dto) {
+        Payment payment = new Payment();
+        payment.setCustomerName(dto.getCustomerName());
+        payment.setAmountGave(dto.getAmountGave());
+        payment.setBalance(dto.getBalance());
+        payment.setPaymentTime(dto.getPaymentTime());
+        payment.setPaymentDate(dto.getPaymentDate());
+        payment.setRemarks(dto.getRemarks());
+        return payment;
     }
 
     public DayBookEntry toDayBookEntry(DayBookEntryDTO dto) {
@@ -30,7 +38,8 @@ public class FinanceMapper {
         entry.setDescription(dto.getDescription());
         entry.setAmount(dto.getAmount());
         entry.setType(dto.getType());
-        entry.setCategory(dto.getCategory());
+        entry.setRemarks(dto.getRemarks());
+        entry.setEnteredBy(dto.getEnteredBy());
         return entry;
     }
 
@@ -41,7 +50,8 @@ public class FinanceMapper {
         dto.setDescription(entry.getDescription());
         dto.setAmount(entry.getAmount());
         dto.setType(entry.getType());
-        dto.setCategory(entry.getCategory());
+        dto.setRemarks(entry.getRemarks());
+        dto.setEnteredBy(entry.getEnteredBy());
         return dto;
     }
 }

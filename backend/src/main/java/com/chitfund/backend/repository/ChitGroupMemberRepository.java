@@ -9,5 +9,8 @@ import java.util.List;
 public interface ChitGroupMemberRepository extends JpaRepository<ChitGroupMember, Long> {
     List<ChitGroupMember> findByChitGroupId(Long chitGroupId);
 
+    // Need findByCustomerId to get a customer's groups
+    List<ChitGroupMember> findByCustomerId(Long customerId);
+
     boolean existsByChitGroupIdAndCustomerId(Long chitGroupId, Long customerId);
 }

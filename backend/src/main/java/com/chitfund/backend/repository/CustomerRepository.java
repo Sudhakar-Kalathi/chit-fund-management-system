@@ -9,10 +9,13 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-
     Optional<Customer> findByCustomerCode(String customerCode);
 
     boolean existsByCustomerCode(String customerCode);
+
+    boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 
     Page<Customer> findByActiveTrue(Pageable pageable);
 

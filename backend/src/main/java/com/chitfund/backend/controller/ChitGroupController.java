@@ -32,7 +32,8 @@ public class ChitGroupController {
     public ResponseEntity<ApiResponse<Page<ChitGroupResponseDTO>>> getAllChitGroups(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ChitGroupResponseDTO> groups = chitGroupService.getAllChitGroups(PageRequest.of(page, size));
+        Page<ChitGroupResponseDTO> groups = chitGroupService.getAllChitGroups(PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id")));
         return ResponseEntity.ok(ApiResponse.success("Chit groups fetched successfully", groups));
     }
 
@@ -43,7 +44,8 @@ public class ChitGroupController {
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ChitGroupResponseDTO> groups = chitGroupService.searchChitGroups(query, PageRequest.of(page, size));
+        Page<ChitGroupResponseDTO> groups = chitGroupService.searchChitGroups(query, PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id")));
         return ResponseEntity.ok(ApiResponse.success("Search results fetched successfully", groups));
     }
 

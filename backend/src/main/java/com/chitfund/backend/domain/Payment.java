@@ -1,9 +1,11 @@
 package com.chitfund.backend.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Entity
@@ -14,28 +16,36 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @Column(nullable = false, length = 100)
+    private String customerName; // The name of the person who paid
 
-    @ManyToOne
-    @JoinColumn(name = "chit_group_id", nullable = false)
-    private ChitGroup chitGroup;
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal amountGave;
 
-    private Integer cycleNumber; // For which month payment is made
+    @Column(precision = 15, scale = 2)
+    private BigDecimal balance; // Remaining balance if any
 
-    private Double amountPaid;
+    private LocalTime paymentTime; // Optional
 
+    @Column(nullable = false)
     private LocalDate paymentDate;
-
-    private String paymentMode; // CASH, BANK, UPI
 
     private String remarks;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

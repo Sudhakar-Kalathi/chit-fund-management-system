@@ -1,17 +1,20 @@
 package com.chitfund.backend.dto;
 
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class ChitGroupResponseDTO {
     private Long id;
     private String groupName;
-    private Double chitAmount;
+    private BigDecimal chitAmount;
     private Integer totalMembers;
     private Integer totalMonths;
-    private Double monthlyAmount;
+    private BigDecimal monthlyAmount;
     private LocalDate startDate;
     private String status;
-    private Integer currentMonth;
+    private boolean active;
+    private LocalDateTime createdAt;
 }

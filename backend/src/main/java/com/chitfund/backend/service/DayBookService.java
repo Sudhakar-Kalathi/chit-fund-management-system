@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -28,24 +29,55 @@ public class DayBookService {
         return financeMapper.toDayBookEntryDTO(saved);
     }
 
+    @Transactional
+    public DayBookEntryDTO updateEntry(Long id, DayBookEntryDTO dto) {
+        DayBookEntry entry = dayBookEntryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Entry not found"));
+        entry.setEntryDate(dto.getEntryDate());
+        entry.setDescription(dto.getDescription());
+        entry.setAmount(dto.getAmount());
+        entry.setType(dto.getType());
+        entry.setRemarks(dto.getRemarks());
+        entry.setEnteredBy(dto.getEnteredBy());
+        return financeMapper.toDayBookEntryDTO(dayBookEntryRepository.save(entry));
+    }
+
     public Map<String, Object> getDailyDayBook(LocalDate date) {
         List<DayBookEntry> entries = dayBookEntryRepository.findByEntryDate(date);
 
-        double totalCredit = entries.stream()
+        BigDecimal totalCredit = entries.stream()
                 .filter(e -> e.getType() == DayBookEntry.EntryType.CREDIT)
-                .mapToDouble(DayBookEntry::getAmount)
-                .sum();
+                .map(DayBookEntry::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        double totalDebit = entries.stream()
+        BigDecimal totalDebit = entries.stream()
                 .filter(e -> e.getType() == DayBookEntry.EntryType.DEBIT)
-                .mapToDouble(DayBookEntry::getAmount)
-                .sum();
+                .map(DayBookEntry::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal netBalance = totalCredit.subtract(totalDebit);
+        String status = netBalance.compareTo(BigDecimal.ZERO) >= 0 ? "GAIN" : "LOSS";
+
+        List<DayBookEntryDTO> credits = entries.stream()
+                .filter(e -> e.getType() == DayBookEntry.EntryType.CREDIT)
+                .map(financeMapper::toDayBookEntryDTO).collect(Collectors.toList());
+
+        List<DayBookEntryDTO> debits = entries.stream()
+                .filter(e -> e.getType() == DayBookEntry.EntryType.DEBIT)
+                .map(financeMapper::toDayBookEntryDTO).collect(Collectors.toList());
+
+        List<DayBookEntryDTO> suspense = entries.stream()
+                .filter(e -> e.getType() == DayBookEntry.EntryType.SUSPENSE)
+                .map(financeMapper::toDayBookEntryDTO).collect(Collectors.toList());
 
         Map<String, Object> response = new HashMap<>();
-        response.put("entries", entries.stream().map(financeMapper::toDayBookEntryDTO).collect(Collectors.toList()));
+        response.put("credits", credits);
+        response.put("debits", debits);
+        response.put("suspense", suspense);
         response.put("totalCredit", totalCredit);
         response.put("totalDebit", totalDebit);
-        response.put("balance", totalCredit - totalDebit);
+        response.put("netBalance", netBalance);
+        response.put("status", status);
 
         return response;
     }

@@ -11,9 +11,11 @@ public class CustomerMapper {
     public Customer toEntity(CustomerRequestDTO dto) {
         Customer customer = new Customer();
         customer.setName(dto.getName());
+        customer.setKeyName(dto.getKeyName());
         customer.setPhone(dto.getPhone());
+        customer.setEmail(dto.getEmail());
+        customer.setWhatsappNo(dto.getWhatsappNo());
         customer.setAddress(dto.getAddress());
-        // active and customerCode are handled in Service
         return customer;
     }
 
@@ -22,7 +24,10 @@ public class CustomerMapper {
         response.setId(customer.getId());
         response.setCustomerCode(customer.getCustomerCode());
         response.setName(customer.getName());
+        response.setKeyName(customer.getKeyName());
         response.setPhone(customer.getPhone());
+        response.setEmail(customer.getEmail());
+        response.setWhatsappNo(customer.getWhatsappNo());
         response.setAddress(customer.getAddress());
         response.setActive(customer.isActive());
         response.setCreatedAt(customer.getCreatedAt());
@@ -32,7 +37,10 @@ public class CustomerMapper {
 
     public void updateEntity(Customer customer, CustomerRequestDTO dto) {
         customer.setName(dto.getName());
+        customer.setKeyName(dto.getKeyName());
         customer.setPhone(dto.getPhone());
+        customer.setEmail(dto.getEmail());
+        customer.setWhatsappNo(dto.getWhatsappNo());
         customer.setAddress(dto.getAddress());
     }
 }

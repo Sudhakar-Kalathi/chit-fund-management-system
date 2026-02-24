@@ -6,12 +6,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "customers",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "customerCode")
-        }
-)
+@Table(name = "customers", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "customerCode"),
+        @UniqueConstraint(columnNames = "name"),
+        @UniqueConstraint(columnNames = "phone")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,13 +23,22 @@ public class Customer {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 20)
-    private String customerCode;   // Example: CUST-001
+    private String customerCode; // Example: CUST-001
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 15)
+    @Column(length = 100)
+    private String keyName; // Introducer name (duplicates allowed)
+
+    @Column(nullable = false, unique = true, length = 15)
     private String phone;
+
+    @Column(length = 255)
+    private String email; // Optional
+
+    @Column(length = 15)
+    private String whatsappNo; // Optional, can be same as phone
 
     @Column(length = 255)
     private String address;
@@ -45,7 +53,6 @@ public class Customer {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Automatically manage timestamps
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -57,4 +64,3 @@ public class Customer {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

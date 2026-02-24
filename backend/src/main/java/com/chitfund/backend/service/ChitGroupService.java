@@ -28,6 +28,7 @@ public class ChitGroupService {
     private final CustomerRepository customerRepository;
     private final ChitGroupMapper chitGroupMapper;
     private final CustomerMapper customerMapper;
+    private final CompanyPayoutService companyPayoutService;
 
     @Transactional
     public ChitGroupResponseDTO createChitGroup(ChitGroupRequestDTO dto) {
@@ -64,12 +65,12 @@ public class ChitGroupService {
     }
 
     public Page<ChitGroupResponseDTO> getAllChitGroups(Pageable pageable) {
-        return chitGroupRepository.findAll(pageable)
+        return chitGroupRepository.findByActiveTrue(pageable)
                 .map(chitGroupMapper::toResponse);
     }
 
     public Page<ChitGroupResponseDTO> searchChitGroups(String query, Pageable pageable) {
-        return chitGroupRepository.findByGroupNameContainingIgnoreCase(query, pageable)
+        return chitGroupRepository.findByActiveTrueAndGroupNameContainingIgnoreCase(query, pageable)
                 .map(chitGroupMapper::toResponse);
     }
 
@@ -136,11 +137,9 @@ public class ChitGroupService {
 
         ChitCycle updatedCycle = chitCycleRepository.save(cycle);
 
-        // Update current month of the group if needed
-        ChitGroup group = cycle.getChitGroup();
-        if (group.getCurrentMonth() < group.getTotalMonths()) {
-            // logic to increment month could serve here or be manual
-        }
+        // Note: ChitGroup entity tracks status via ChitCycle records, not a
+        // currentMonth counter
+        companyPayoutService.generatePayoutForCycle(updatedCycle.getId());
 
         return chitGroupMapper.toCycleDTO(updatedCycle);
     }

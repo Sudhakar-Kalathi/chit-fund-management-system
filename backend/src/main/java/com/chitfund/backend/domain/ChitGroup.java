@@ -1,12 +1,19 @@
 package com.chitfund.backend.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "chit_groups")
+@Table(name = "chit_groups", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "groupName")
+})
 public class ChitGroup {
 
     @Id
@@ -16,25 +23,43 @@ public class ChitGroup {
     @Column(unique = true, nullable = false)
     private String groupName;
 
-    private Double chitAmount;
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal chitAmount;
 
+    @Column(nullable = false)
     private Integer totalMembers;
 
-    private Integer totalMonths;
+    @Column(nullable = false)
+    private Integer totalMonths; // Must equal totalMembers per business rule
 
-    private Double monthlyAmount;
+    @Column(nullable = false, precision = 15, scale = 2)
+    private BigDecimal monthlyAmount;
 
     private LocalDate startDate;
 
+    @Column(nullable = false)
     private String status; // ACTIVE, COMPLETED
 
-    private Integer currentMonth; // Default 1
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        if (currentMonth == null)
-            currentMonth = 1;
         if (status == null)
             status = "ACTIVE";
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

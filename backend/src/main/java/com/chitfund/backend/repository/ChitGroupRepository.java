@@ -11,5 +11,7 @@ public interface ChitGroupRepository extends JpaRepository<ChitGroup, Long> {
 
     boolean existsByGroupName(String groupName);
 
-    Page<ChitGroup> findByGroupNameContainingIgnoreCase(String groupName, Pageable pageable);
+    Page<ChitGroup> findByActiveTrue(Pageable pageable);
+
+    Page<ChitGroup> findByActiveTrueAndGroupNameContainingIgnoreCase(String groupName, Pageable pageable);
 }

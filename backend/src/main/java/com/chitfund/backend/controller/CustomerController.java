@@ -2,6 +2,7 @@ package com.chitfund.backend.controller;
 
 import com.chitfund.backend.dto.CustomerRequestDTO;
 import com.chitfund.backend.dto.CustomerResponseDTO;
+import com.chitfund.backend.dto.CustomerDetailedDTO;
 import com.chitfund.backend.dto.ApiResponse;
 import jakarta.validation.Valid;
 import com.chitfund.backend.service.CustomerService;
@@ -33,7 +34,8 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<Page<CustomerResponseDTO>>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<CustomerResponseDTO> customers = customerService.getAllCustomers(PageRequest.of(page, size));
+        Page<CustomerResponseDTO> customers = customerService.getAllCustomers(PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id")));
         return ResponseEntity.ok(ApiResponse.success("Customers fetched successfully", customers));
     }
 
@@ -44,7 +46,8 @@ public class CustomerController {
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<CustomerResponseDTO> customers = customerService.searchCustomers(query, PageRequest.of(page, size));
+        Page<CustomerResponseDTO> customers = customerService.searchCustomers(query, PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "id")));
         return ResponseEntity.ok(ApiResponse.success("Search results fetched successfully", customers));
     }
 
@@ -54,6 +57,14 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(@PathVariable Long id) {
         CustomerResponseDTO customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(ApiResponse.success("Customer fetched successfully", customer));
+    }
+
+    // ADMIN + STAFF - Get Full Details (Groups + Payments)
+    @GetMapping("/api/customers/{id}/details")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<ApiResponse<CustomerDetailedDTO>> getCustomerDetails(@PathVariable Long id) {
+        CustomerDetailedDTO details = customerService.getCustomerDetails(id);
+        return ResponseEntity.ok(ApiResponse.success("Customer detailed profile fetched successfully", details));
     }
 
     // ADMIN ONLY - Update
