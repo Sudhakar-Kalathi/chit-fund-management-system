@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, AlertCircle, UserCog } from 'lucide-react';
+import { Lock, User, AlertCircle, UserCog, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
     const [userType, setUserType] = useState('admin');
-    const [username, setUsername] = useState('admin');
-    const [password, setPassword] = useState('admin');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
@@ -15,14 +16,6 @@ const Login = () => {
 
     const handleUserTypeChange = (type) => {
         setUserType(type);
-        // Auto-fill credentials based on user type
-        if (type === 'admin') {
-            setUsername('admin');
-            setPassword('admin');
-        } else {
-            setUsername('staff');
-            setPassword('staff');
-        }
         setError('');
     };
 
@@ -80,8 +73,8 @@ const Login = () => {
                                     type="button"
                                     onClick={() => handleUserTypeChange('admin')}
                                     className={`p-4 rounded-lg border-2 transition-all duration-200 ${userType === 'admin'
-                                            ? 'border-primary-500 bg-primary-50 text-primary-700'
-                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                                         }`}
                                 >
                                     <UserCog className="mx-auto mb-2" size={24} />
@@ -92,8 +85,8 @@ const Login = () => {
                                     type="button"
                                     onClick={() => handleUserTypeChange('staff')}
                                     className={`p-4 rounded-lg border-2 transition-all duration-200 ${userType === 'staff'
-                                            ? 'border-primary-500 bg-primary-50 text-primary-700'
-                                            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
                                         }`}
                                 >
                                     <User className="mx-auto mb-2" size={24} />
@@ -123,13 +116,20 @@ const Login = () => {
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                                     placeholder="Enter your password"
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                             </div>
                         </div>
 
