@@ -48,12 +48,14 @@ public class PaymentService {
         return financeMapper.toPaymentDTO(paymentRepository.save(payment));
     }
 
+    @Transactional(readOnly = true)
     public List<PaymentDTO> getPaymentsByDate(LocalDate date) {
         return paymentRepository.findByPaymentDate(date).stream()
                 .map(financeMapper::toPaymentDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<PaymentDTO> getPaymentsByMonth(int year, int month) {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class CustomerService {
     private final ChitGroupMapper chitGroupMapper;
     private final FinanceMapper financeMapper;
 
+    @Transactional
     public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
         if (customerRepository.existsByNameIgnoreCase(dto.getName())) {
             throw new com.chitfund.backend.exception.DuplicateResourceException(
@@ -42,17 +44,20 @@ public class CustomerService {
         return customerMapper.toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
     public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
         return customerRepository.findByActiveTrue(pageable)
                 .map(customerMapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public CustomerResponseDTO getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
         return customerMapper.toResponse(customer);
     }
 
+    @Transactional(readOnly = true)
     public CustomerDetailedDTO getCustomerDetails(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
@@ -71,11 +76,13 @@ public class CustomerService {
         return detailedDTO;
     }
 
+    @Transactional(readOnly = true)
     public Page<CustomerResponseDTO> searchCustomers(String query, Pageable pageable) {
         return customerRepository.findByActiveTrueAndNameContainingIgnoreCaseOrPhoneContaining(query, query, pageable)
                 .map(customerMapper::toResponse);
     }
 
+    @Transactional
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
@@ -91,6 +98,7 @@ public class CustomerService {
         return customerMapper.toResponse(updated);
     }
 
+    @Transactional
     public void softDeleteCustomer(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));

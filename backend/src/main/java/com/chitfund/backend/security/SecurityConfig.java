@@ -27,6 +27,7 @@ public class SecurityConfig {
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
                 http
+                                .cors(org.springframework.security.config.Customizer.withDefaults())
                                 // No CSRF for JWT
                                 .csrf(csrf -> csrf.disable())
 

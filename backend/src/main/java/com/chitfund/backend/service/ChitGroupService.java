@@ -1,7 +1,13 @@
 package com.chitfund.backend.service;
 
-import com.chitfund.backend.domain.*;
-import com.chitfund.backend.dto.*;
+import com.chitfund.backend.domain.ChitCycle;
+import com.chitfund.backend.domain.ChitGroup;
+import com.chitfund.backend.domain.ChitGroupMember;
+import com.chitfund.backend.domain.Customer;
+import com.chitfund.backend.dto.ChitCycleDTO;
+import com.chitfund.backend.dto.ChitGroupDetailedDTO;
+import com.chitfund.backend.dto.ChitGroupRequestDTO;
+import com.chitfund.backend.dto.ChitGroupResponseDTO;
 import com.chitfund.backend.exception.DuplicateResourceException;
 import com.chitfund.backend.exception.ResourceNotFoundException;
 import com.chitfund.backend.mapper.ChitGroupMapper;
@@ -64,11 +70,13 @@ public class ChitGroupService {
         chitCycleRepository.saveAll(cycles);
     }
 
+    @Transactional(readOnly = true)
     public Page<ChitGroupResponseDTO> getAllChitGroups(Pageable pageable) {
         return chitGroupRepository.findByActiveTrue(pageable)
                 .map(chitGroupMapper::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public Page<ChitGroupResponseDTO> searchChitGroups(String query, Pageable pageable) {
         return chitGroupRepository.findByActiveTrueAndGroupNameContainingIgnoreCase(query, pageable)
                 .map(chitGroupMapper::toResponse);
@@ -107,7 +115,8 @@ public class ChitGroupService {
         // Check if group is full
         long currentMemberCount = chitGroupMemberRepository.findByChitGroupId(groupId).size();
         if (currentMemberCount >= group.getTotalMembers()) {
-            throw new RuntimeException("Chit Group is full. Max members: " + group.getTotalMembers());
+            throw new com.chitfund.backend.exception.BusinessException(
+                    "Chit Group is full. Max members: " + group.getTotalMembers());
         }
 
         ChitGroupMember member = new ChitGroupMember();

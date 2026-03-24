@@ -2,6 +2,7 @@ package com.chitfund.backend.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -13,7 +14,7 @@ public class ChitCycle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chit_group_id", nullable = false)
     private ChitGroup chitGroup;
 
@@ -22,15 +23,20 @@ public class ChitCycle {
     private LocalDate auctionDate;
 
     // "Amount taken by (Customer)"
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "winner_id")
     private Customer winner;
 
-    private Double chitPayoutAmount; // Actual amount given to winner
-    private Double auctionAmount; // The bid amount (deduction)
-    private Double commissionAmount; // Company commission
-    private Double dividendAmount; // Distributed to members
-    private Double finalMonthlyAmount; // Amount each member has to pay this month
+    @Column(precision = 15, scale = 2)
+    private BigDecimal chitPayoutAmount; // Actual amount given to winner
+    @Column(precision = 15, scale = 2)
+    private BigDecimal auctionAmount; // The bid amount (deduction)
+    @Column(precision = 15, scale = 2)
+    private BigDecimal commissionAmount; // Company commission
+    @Column(precision = 15, scale = 2)
+    private BigDecimal dividendAmount; // Distributed to members
+    @Column(precision = 15, scale = 2)
+    private BigDecimal finalMonthlyAmount; // Amount each member has to pay this month
 
     private String status; // PENDING, COMPLETED
 }

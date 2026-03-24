@@ -39,13 +39,13 @@ public class CompanyPayoutService {
             payout.setChitGroup(cycle.getChitGroup());
             payout.setChitCycle(cycle);
             payout.setCustomer(cycle.getWinner());
-            payout.setTargetAmount(BigDecimal.valueOf(cycle.getChitPayoutAmount()));
-            payout.setBalanceAmount(BigDecimal.valueOf(cycle.getChitPayoutAmount()));
+            payout.setTargetAmount(cycle.getChitPayoutAmount());
+            payout.setBalanceAmount(cycle.getChitPayoutAmount());
             payoutRepository.save(payout);
         } else {
             CompanyPayout payout = payoutRepository.findByChitCycleIdAndActiveTrue(cycleId).get();
             // Update target amount if admin changed the payout amount
-            BigDecimal newTarget = BigDecimal.valueOf(cycle.getChitPayoutAmount());
+            BigDecimal newTarget = cycle.getChitPayoutAmount();
             if (payout.getTargetAmount().compareTo(newTarget) != 0) {
                 payout.setTargetAmount(newTarget);
                 payout.setBalanceAmount(newTarget.subtract(payout.getPaidAmount()));
